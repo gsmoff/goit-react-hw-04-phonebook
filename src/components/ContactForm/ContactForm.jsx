@@ -1,33 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Component } from 'react';
 import { nanoid } from 'nanoid';
+import { useState } from 'react';
 
-const INITIAL_STATE = {
-  name: '',
-  phone: '',
-};
-export class ContactForm extends Component {
-  state = INITIAL_STATE;
-  handleCangeForm = ({ target }) => {
-    const { name, value } = target;
-    this.setState({ [name]: value });
+
+export const ContactForm = ({onAdd,onCheckUnique}) => {
+  
+  const [name, setName]=useState('')
+  const [phone, setPhone]=useState('')
+  
+  const handleCangeForm = (event) => {
+    const { name, value } = event.target;
+    if (name === 'name') setName(value);
+    if (name === 'phone') setPhone(value);
   };
-  handleFormSubmit = (e) => {
+
+  const handleFormSubmit = (e) => {
     e.preventDefault();
-    const { name, phone } = this.state;
-    const { onAdd } = this.props;
-    const isValidateForm = this.validateForm();
+    const isValidateForm = validateForm();
 
     if (!isValidateForm) return;
 
     onAdd({ id: nanoid(), name, phone });
 
-    this.resetForm();
+    resetForm();
   };
-  validateForm = () => {
-    const { name, phone } = this.state;
-    const { onCheckUnique } = this.props;
+  const validateForm = () => {
     if (!name || !phone) {
       alert('Some filed is empty');
       return false
@@ -35,31 +33,33 @@ export class ContactForm extends Component {
     return onCheckUnique(name);
   };
 
-  resetForm = () => this.setState(INITIAL_STATE);
+  const resetForm = () => {
+    setName('')
+    setPhone('')
+  }
 
-  render() {
-    const { name, phone } = this.state;
+
     return (
-      <form onSubmit={this.handleFormSubmit}>
+      <form onSubmit={handleFormSubmit}>
         <input
           type="text"
           name="name"
           placeholder="Enter name"
           value={name}
-          onChange={this.handleCangeForm}
+          onChange={handleCangeForm}
         />
         <input
           type="tel"
           name="phone"
           placeholder="Enter phone number"
           value={phone}
-          onChange={this.handleCangeForm}
+          onChange={handleCangeForm}
         />
         <button type="submit">Add contact</button>
       </form>
     );
   }
-}
+
 
 ContactForm.propTypes = {
   onAdd: PropTypes.func.isRequired,
