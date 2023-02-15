@@ -7,9 +7,8 @@ const CONTACTS_KEY = 'contacts';
 
 export const App = () => {
   const [contacts, setContacts] = useState(
-    localStorage.getItem(CONTACTS_KEY) !== null
-      ? JSON.parse(localStorage.getItem(CONTACTS_KEY))
-      : Contacts
+      JSON.parse(localStorage.getItem(CONTACTS_KEY)) ??
+      Contacts
   );
   const [filter, setFilter] = useState('');
   
@@ -17,12 +16,6 @@ export const App = () => {
     // console.log('useEffect start!')
     localStorage.setItem(CONTACTS_KEY, JSON.stringify(contacts));
   }, [contacts]);
-
-  useEffect(() => {
-    const localData = localStorage.getItem(CONTACTS_KEY);
-    setContacts(JSON.parse(localData));
-  }, []);
-
 
   const handleAddContact = newContact => {
     setContacts(prevContacts => [...prevContacts, newContact]);
